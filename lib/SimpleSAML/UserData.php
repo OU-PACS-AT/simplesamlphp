@@ -72,21 +72,29 @@ class UserData
 					$numGroups = count($value);
 					$userData["MemberOf"] = [];
 					for ($i = 0; $i < $numGroups; $i++) {
-						error_log("Group:--".$value[$i]);
+						//error_log("Group:--".$value[$i]);
+						
 						
 						if (preg_match("/\bCN=staff,OU/", $value[$i])){
 							$userData["MemberOf"][] = "Staff";
-						}
-						if (preg_match("/\bCN=faculty,OU/", $value[$i])){
+							
+						} else if (preg_match("/\bCN=faculty,OU/", $value[$i]) ){
 							$userData["MemberOf"][] = "Faculty";
-						}
-						if (preg_match("/\bCN=freshmen,OU/", $value[$i]) ||
+							
+						} else if (preg_match("/\bCN=freshmen,OU/", $value[$i]) ||
 							preg_match("/\bCN=gradstudents,OU/", $value[$i]) ||
 							preg_match("/\bCN=juniors,OU/", $value[$i]) ||
 							preg_match("/\bCN=seniors,OU/", $value[$i]) ||
 							preg_match("/\bCN=sophomores,OU/", $value[$i]) ||
-							preg_match("/\bCN=unclassifiedstudents,OU/", $value[$i])	){
+								preg_match("/\bCN=unclassifiedstudents,OU/", $value[$i])){
+							
 							$userData["MemberOf"][] = "Student";
+							
+						//} else if (preg_match("/\bCN=Exceptions,OU/", $value[$i])){
+						//	$userData["MemberOf"][] = "PACSATAdmin";
+							
+						} else if (preg_match('/\bCN=(\w+),OU.*/', $value[$i], $group)){
+							$userData["MemberOf"][] = $group[1];
 						}
 					}
 					//$userData["MemberOf"] = implode(':', $value);
@@ -151,7 +159,7 @@ class UserData
 			self::getInstance();
 		}
 		return self::$cryptor->decrypt($value);
-	}
+	} 
 
 	
 	
